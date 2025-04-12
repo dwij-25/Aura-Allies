@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Ninja | Master Your Interviews</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+    <div class="ninja-progress" id="ninjaProgress"></div>
+
+    <!-- Header section -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span>Interview</span> Ninja
+                </div>
+                <nav class="nav-links">
+                    <a href="#">Home</a>
+                    <a href="#features">Features</a>
+                    <a href="#demo">Demo</a>
+                    <a href="#about">About</a>
+                    <a href="dashboard.html">Dashboard</a>
+                </nav>
+                <button class="cta-button" onclick="scrollToDemo()">
+                    Try it now <i class="fas fa-user-ninja"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1 class="slide-up"><span style="color: var(--ninja-accent); font-family: 'Permanent Marker', cursive;">Interview</span> Ninja</h1>
+            <p class="slide-up">Master the art of interviewing with stealthy precision</p>
+            <div class="slide-up" style="display: flex; gap: 15px; justify-content: center;">
+                <button class="cta-button" onclick="scrollToDemo()">
+                    Start Practice <i class="fas fa-user-ninja"></i>
+                </button>
+                <a href="dashboard.html" class="cta-button" style="background-color: var(--ninja-gray);">
+                    View Dashboard <i class="fas fa-tachometer-alt"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>RIZZ YOUR INTERVIEWER</h2>
+                <p>Train with our AI to master your interview skills</p>
+            </div>
+            <!-- Features content removed as requested -->
+        </div>
+    </section>
+
+    <!-- Flashcard Album positioned between features and demo sections -->
+    <div class="flashcard-album-container" style="padding: 40px 0;">
+        <div class="section-title">
+            <h2>Feature Highlights</h2>
+            <p>Explore our key features through these interactive cards</p>
+        </div>
+        
+        <!-- Debug Info -->
+        <div style="background-color: rgba(0,0,0,0.4); padding: 10px; margin: 10px auto; max-width: 600px; border-radius: 5px; text-align: center;">
+            <p id="debug-info" style="color: white; font-family: monospace;">Flashcard debug info will appear here</p>
+        </div>
+        
+        <div class="flashcard-album" id="flashcardAlbum" style="position: relative; width: 100%; height: 400px; margin: 40px auto; background-color: transparent;">
+            <div class="flashcard-container" id="flashcardContainer">
+                <!-- Cards will be added here dynamically -->
+                <!-- Fallback Static Card for Testing -->
+                <div class="flashcard card-position-0" style="z-index: 10;">
+                    <div><i class="fas fa-star shuriken-spin" style="color: var(--ninja-accent); font-size: 24px; margin-bottom: 15px;"></i></div>
+                    <h4>Static Test Card</h4>
+                    <p>This is a static test card to verify CSS styling is working properly.</p>
+                </div>
+            </div>
+            <div class="flashcard-navigation">
+                <div class="flashcard-nav-button prev-button" id="prevCard">
+                    <i class="fas fa-chevron-left"></i>
+                </div>
+                <div class="flashcard-nav-button next-button" id="nextCard">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="demo" id="demo">
+        <div class="container">
+            <div class="section-title">
+                <h2>Experience the Interview</h2>
+                <p>Try our interactive demo with OpenAI-powered responses</p>
+            </div>
+            <div class="chat-container">
+                <div class="chat-header">
+                    <div class="user-info">
+                        <div class="avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 600;">AI Interviewer <span class="ai-badge">GPT-powered</span></div>
+                            <div style="font-size: 12px; color: var(--ninja-muted);">Active now</div>
+                        </div>
+                    </div>
+                    <div class="chat-controls">
+                        <button class="control-button" id="micButton" onclick="toggleMic()">
+                            <i class="fas fa-microphone-slash"></i>
+                        </button>
+                        <button class="control-button" id="cameraButton" onclick="toggleCamera()">
+                            <i class="fas fa-video-slash"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Emotion detection container (hidden by default) -->
+                <div id="emotionContainer" style="display: none; padding: 10px; background-color: var(--ninja-gray); border-bottom: 1px solid rgba(108, 108, 124, 0.2);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                        <span style="font-size: 14px; color: var(--ninja-muted);">Emotion Detection</span>
+                        <span id="emotionText" style="font-weight: 600;">Neutral</span>
+                    </div>
+                    <div style="height: 4px; background-color: rgba(108, 108, 124, 0.2); border-radius: 2px; overflow: hidden;">
+                        <div id="emotionBar" style="height: 100%; width: 70%; background-color: var(--ninja-accent); transition: width 0.5s ease, background-color 0.5s ease;"></div>
+                    </div>
+                </div>
+                
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message ai fade-in">
+                        <div class="message-sender">
+                            <i class="fas fa-robot"></i> AI Interviewer
+                        </div>
+                        <div class="message-text">
+                            Welcome to your interview simulation! I am your AI interviewer today. Could you start by introducing yourself and telling me about your background?
+                        </div>
+                    </div>
+                    <div class="typing-indicator" id="typingIndicator" style="display: none;">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+                
+                <!-- API Key Input Section -->
+                <div id="apiKeySection" class="api-key-section">
+                    <div class="api-key-container">
+                        <div class="api-key-header">
+                            <h4><i class="fas fa-key"></i> OpenAI API Key Required</h4>
+                            <p>Enter your OpenAI API key to enable AI responses</p>
+                        </div>
+                        <div class="api-key-input">
+                            <input type="password" id="apiKeyInput" placeholder="Enter your OpenAI API key">
+                            <button class="save-key-button" onclick="saveApiKey()">
+                                <i class="fas fa-save"></i> Save Key
+                            </button>
+                        </div>
+                        <div class="api-key-info">
+                            <p><small>Your API key is stored locally in your browser and never sent to our servers.</small></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chat-input">
+                    <input type="text" id="userInput" placeholder="Type your response..." onkeypress="handleKeyPress(event)">
+                    <button class="send-button" onclick="sendMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="role-reversal.html" class="cta-button">
+                    Try Role Reversal Mode <i class="fas fa-exchange-alt"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="container" style="padding: 80px 0;">
+        <div class="section-title">
+            <h2>About Interview Ninja</h2>
+            <p>Your ultimate companion for interview preparation</p>
+        </div>
+        
+        <div style="display: flex; gap: 40px; flex-wrap: wrap; justify-content: center; margin-top: 40px;">
+            <div style="flex: 1; min-width: 300px;">
+                <h3 style="font-size: 24px; margin-bottom: 20px;">Our Mission</h3>
+                <p style="color: var(--ninja-muted); margin-bottom: 20px;">
+                    Interview Ninja was created to help job seekers master the art of interviewing through AI-powered
+                    practice and feedback. We believe everyone deserves the opportunity to present their best self
+                    during interviews.
+                </p>
+                <p style="color: var(--ninja-muted);">
+                    Our platform combines advanced AI technology with practical interview techniques to provide
+                    a realistic and effective practice environment.
+                </p>
+            </div>
+            
+            <div style="flex: 1; min-width: 300px;">
+                <h3 style="font-size: 24px; margin-bottom: 20px;">Why Choose Us</h3>
+                <ul style="list-style-type: none; padding: 0; color: var(--ninja-muted);">
+                    <li style="margin-bottom: 10px; display: flex; align-items: flex-start;">
+                        <span style="color: var(--ninja-accent); margin-right: 10px;">•</span>
+                        <span>Realistic AI-powered interviews that adapt to your responses</span>
+                    </li>
+                    <li style="margin-bottom: 10px; display: flex; align-items: flex-start;">
+                        <span style="color: var(--ninja-accent); margin-right: 10px;">•</span>
+                        <span>Immediate feedback on communication and presentation</span>
+                    </li>
+                    <li style="margin-bottom: 10px; display: flex; align-items: flex-start;">
+                        <span style="color: var(--ninja-accent); margin-right: 10px;">•</span>
+                        <span>Industry-specific questions tailored to your field</span>
+                    </li>
+                    <li style="margin-bottom: 10px; display: flex; align-items: flex-start;">
+                        <span style="color: var(--ninja-accent); margin-right: 10px;">•</span>
+                        <span>Privacy-focused with options to practice anonymously</span>
+                    </li>
+                    <li style="display: flex; align-items: flex-start;">
+                        <span style="color: var(--ninja-accent); margin-right: 10px;">•</span>
+                        <span>Continuous improvement with detailed performance tracking</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="logo">
+                    <span>Interview</span> Ninja
+                </div>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Contact Us</a>
+                </div>
+                <div class="copyright">
+                    &copy; 2023 Interview Ninja. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html> 
