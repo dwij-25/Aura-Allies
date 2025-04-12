@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Role Reversal Mode | Interview Ninja</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <style>
+        .role-switch-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .switch-label {
+            font-weight: 600;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--ninja-gray);
+            transition: .4s;
+            border-radius: 30px;
+            border: 1px solid rgba(108, 108, 124, 0.3);
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 3px;
+            background-color: var(--ninja-light);
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: var(--ninja-accent);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(29px);
+        }
+        
+        .question-bank {
+            max-height: 300px;
+            overflow-y: auto;
+            background-color: var(--ninja-gray);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .question-item {
+            background-color: rgba(15, 15, 23, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: 1px solid rgba(108, 108, 124, 0.2);
+        }
+        
+        .question-item:hover {
+            background-color: rgba(255, 77, 77, 0.1);
+        }
+        
+        .question-item.active {
+            border-left: 3px solid var(--ninja-accent);
+        }
+        
+        .question-category {
+            font-size: 12px;
+            color: var(--ninja-muted);
+            margin-bottom: 8px;
+        }
+        
+        .question-text {
+            font-weight: 500;
+        }
+        
+        .candidate-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background-color: var(--ninja-gray);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .candidate-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--ninja-accent);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .candidate-details h3 {
+            margin-bottom: 5px;
+        }
+        
+        .candidate-details p {
+            color: var(--ninja-muted);
+            font-size: 14px;
+        }
+        
+        .evaluation-panel {
+            background-color: var(--ninja-gray);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .evaluation-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .eval-form-group {
+            margin-bottom: 15px;
+        }
+        
+        .eval-form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .rating-stars {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .star {
+            color: var(--ninja-muted);
+            cursor: pointer;
+            font-size: 20px;
+            transition: color 0.2s;
+        }
+        
+        .star:hover, .star.active {
+            color: var(--ninja-warning);
+        }
+        
+        textarea.eval-notes {
+            width: 100%;
+            background-color: rgba(15, 15, 23, 0.5);
+            border: 1px solid rgba(108, 108, 124, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            color: var(--ninja-light);
+            resize: vertical;
+            min-height: 100px;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        textarea.eval-notes:focus {
+            outline: none;
+            border-color: var(--ninja-accent);
+        }
+        
+        .eval-submit-btn {
+            background-color: var(--ninja-accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 15px;
+        }
+        
+        .eval-submit-btn:hover {
+            background-color: #e63c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="ninja-progress" id="ninjaProgress"></div>
+
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="index.html"><span>Interview</span> Ninja</a>
+                </div>
+                <nav class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="index.html#features">Features</a>
+                    <a href="index.html#demo">Demo</a>
+                    <a href="index.html#about">About</a>
+                </nav>
+                <a href="index.html" class="cta-button">
+                    <i class="fas fa-arrow-left"></i> Back to Main
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <section class="container" style="padding: 60px 0;">
+        <div class="section-title">
+            <h2>Role Reversal Mode</h2>
+            <p>Experience the interview from the interviewer's perspective</p>
+        </div>
+        
+        <div class="role-switch-toggle">
+            <span class="switch-label">Candidate</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="roleToggle" checked>
+                <span class="toggle-slider"></span>
+            </label>
+            <span class="switch-label">Interviewer</span>
+        </div>
+        
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="user-info">
+                    <div class="avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600;">AI Candidate</div>
+                        <div style="font-size: 12px; color: var(--ninja-muted);">Ready for interview</div>
+                    </div>
+                </div>
+                <div class="chat-controls">
+                    <button class="control-button" id="helpButton" title="Get help on being a good interviewer">
+                        <i class="fas fa-question"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="message ai fade-in">
+                    <div class="message-sender">
+                        <i class="fas fa-user"></i> AI Candidate
+                    </div>
+                    <div class="message-text">
+                        Hello! I'm ready for my interview today. I'm a software developer with 5 years of experience in web development. Please feel free to ask me any questions!
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-input">
+                <input type="text" id="userInput" placeholder="Type your question..." onkeypress="handleKeyPress(event)">
+                <button class="send-button" onclick="sendMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div style="display: flex; flex-wrap: wrap; gap: 30px; margin-top: 40px;">
+            <div style="flex: 1; min-width: 300px;">
+                <h3 style="margin-bottom: 15px;">Question Bank</h3>
+                <p style="color: var(--ninja-muted); margin-bottom: 15px;">Click any question to ask the candidate</p>
+                
+                <div class="question-bank">
+                    <div class="question-item" onclick="useQuestion(this)">
+                        <div class="question-category">Technical</div>
+                        <div class="question-text">Can you explain the difference between REST and GraphQL?</div>
+                    </div>
+                    <div class="question-item" onclick="useQuestion(this)">
+                        <div class="question-category">Behavioral</div>
+                        <div class="question-text">Tell me about a time when you had to meet a tight deadline.</div>
+                    </div>
+                    <div class="question-item" onclick="useQuestion(this)">
+                        <div class="question-category">Technical</div>
+                        <div class="question-text">How would you optimize a slow-loading website?</div>
+                    </div>
+                    <div class="question-item" onclick="useQuestion(this)">
+                        <div class="question-category">Problem-Solving</div>
+                        <div class="question-text">How would you approach debugging a complex issue in production?</div>
+                    </div>
+                    <div class="question-item" onclick="useQuestion(this)">
+                        <div class="question-category">Behavioral</div>
+                        <div class="question-text">Describe a situation where you had a conflict with a team member.</div>
+                    </div>
+                    <div class="question-item" onclick="useQuestion(this)">
+                        <div class="question-category">Technical</div>
+                        <div class="question-text">What's your experience with containerization technologies like Docker?</div>
+                    </div>
+                    <div class="question-item" onclick="useQuestion(this)">
+                        <div class="question-category">Leadership</div>
+                        <div class="question-text">How do you mentor junior developers on your team?</div>
+                    </div>
+                    <div class="question-item" onclick="useQuestion(this)">
+                        <div class="question-category">Technical</div>
+                        <div class="question-text">Explain the concept of microservices architecture.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="flex: 1; min-width: 300px;">
+                <h3 style="margin-bottom: 15px;">Candidate Profile</h3>
+                <p style="color: var(--ninja-muted); margin-bottom: 15px;">Information about your interviewee</p>
+                
+                <div class="candidate-info">
+                    <div class="candidate-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="candidate-details">
+                        <h3>Alex Johnson</h3>
+                        <p>Senior Software Engineer</p>
+                        <p>5 years experience</p>
+                        <p>Skills: JavaScript, React, Node.js, Python</p>
+                    </div>
+                </div>
+                
+                <div class="evaluation-panel">
+                    <h3 class="evaluation-title">
+                        <i class="fas fa-clipboard-check" style="color: var(--ninja-success);"></i>
+                        Candidate Evaluation
+                    </h3>
+                    
+                    <div class="eval-form-group">
+                        <label>Technical Skills</label>
+                        <div class="rating-stars">
+                            <i class="fas fa-star star" data-rating="1" onclick="setRating(this, 'technical')"></i>
+                            <i class="fas fa-star star" data-rating="2" onclick="setRating(this, 'technical')"></i>
+                            <i class="fas fa-star star" data-rating="3" onclick="setRating(this, 'technical')"></i>
+                            <i class="fas fa-star star" data-rating="4" onclick="setRating(this, 'technical')"></i>
+                            <i class="fas fa-star star" data-rating="5" onclick="setRating(this, 'technical')"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="eval-form-group">
+                        <label>Communication</label>
+                        <div class="rating-stars">
+                            <i class="fas fa-star star" data-rating="1" onclick="setRating(this, 'communication')"></i>
+                            <i class="fas fa-star star" data-rating="2" onclick="setRating(this, 'communication')"></i>
+                            <i class="fas fa-star star" data-rating="3" onclick="setRating(this, 'communication')"></i>
+                            <i class="fas fa-star star" data-rating="4" onclick="setRating(this, 'communication')"></i>
+                            <i class="fas fa-star star" data-rating="5" onclick="setRating(this, 'communication')"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="eval-form-group">
+                        <label>Problem-Solving</label>
+                        <div class="rating-stars">
+                            <i class="fas fa-star star" data-rating="1" onclick="setRating(this, 'problem-solving')"></i>
+                            <i class="fas fa-star star" data-rating="2" onclick="setRating(this, 'problem-solving')"></i>
+                            <i class="fas fa-star star" data-rating="3" onclick="setRating(this, 'problem-solving')"></i>
+                            <i class="fas fa-star star" data-rating="4" onclick="setRating(this, 'problem-solving')"></i>
+                            <i class="fas fa-star star" data-rating="5" onclick="setRating(this, 'problem-solving')"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="eval-form-group">
+                        <label>Notes</label>
+                        <textarea class="eval-notes" placeholder="Add your evaluation notes here..."></textarea>
+                    </div>
+                    
+                    <button class="eval-submit-btn" onclick="submitEvaluation()">
+                        Submit Evaluation
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="logo">
+                    <span>Interview</span> Ninja
+                </div>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Contact Us</a>
+                </div>
+                <div class="copyright">
+                    &copy; 2023 Interview Ninja. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Candidate responses for the role reversal mode
+        const candidateResponses = {
+            "rest_graphql": "REST and GraphQL are both API architectures, but they differ in how they handle data. REST is resource-based where you access different endpoints for different data. GraphQL, on the other hand, uses a single endpoint where the client specifies exactly what data it needs, which helps minimize over-fetching of data. GraphQL also allows you to get multiple resources in a single request, while REST typically requires multiple requests for different resources.",
+            
+            "deadline": "In my previous role, we had to deliver a critical e-commerce platform update before Black Friday. With only two weeks left and several features incomplete, I organized the team to prioritize must-have features, set up daily stand-ups for quick issue resolution, and stayed late to ensure everything was properly tested. We successfully deployed three days before the deadline, which resulted in a 30% increase in sales compared to the previous year.",
+            
+            "website_optimization": "To optimize a slow-loading website, I'd first use tools like Lighthouse and WebPageTest to identify specific bottlenecks. Common optimizations include: compressing images, implementing lazy loading, minifying CSS/JS files, leveraging browser caching, using a CDN, reducing third-party scripts, and implementing code splitting. For server-side improvements, I'd look at database query optimization and implementing caching strategies. It's important to measure performance before and after each change to quantify the impact.",
+            
+            "debugging_production": "When debugging a production issue, I first gather as much information as possible—logs, error reports, and user-reported behaviors. I try to reproduce the issue in a controlled environment. If it's urgent, I look for quick mitigations while investigating the root cause. I use monitoring tools and logs to trace the execution path. Once I identify the cause, I develop a fix, test it thoroughly in staging, and then deploy following proper procedures. Afterward, I document the issue and solution for future reference.",
+            
+            "team_conflict": "I once had a disagreement with a team member about the architecture approach for a new feature. Instead of pushing my solution, I suggested we list pros and cons of each approach and discuss them objectively. We ended up combining elements from both solutions, resulting in a better outcome than either original proposal. I learned that conflicts, when handled constructively, can lead to innovation and stronger team relationships.",
+            
+            "docker_experience": "I've been working with Docker for about three years now. I use it to create consistent development environments across the team and for our CI/CD pipeline. I've containerized various applications, from simple Node.js APIs to more complex microservices with specific dependencies. I'm comfortable with Docker Compose for multi-container setups and have experience optimizing Docker images for production using multi-stage builds. I've also worked with Kubernetes for orchestrating containers in larger environments.",
+            
+            "mentor_juniors": "I mentor junior developers through a combination of pair programming, code reviews, and regular 1-on-1 sessions. I believe in providing context around decisions rather than just giving solutions. I encourage juniors to experiment and make mistakes in a safe environment. For technical growth, I assign challenging but achievable tasks and gradually increase complexity. I also share resources tailored to their learning style and career goals.",
+            
+            "microservices": "Microservices architecture is an approach where an application is built as a collection of small, independent services that communicate via well-defined APIs. Each service is focused on a specific business capability and can be developed, deployed, and scaled independently. This offers benefits like technology diversity, isolated failures, and team autonomy. However, it introduces complexities in service discovery, distributed transactions, and monitoring. Successful implementation requires good DevOps practices, automated testing, and careful service boundary definition."
+        };
+        
+        // Function to handle sending interviewer questions
+        function sendMessage() {
+            const userInput = document.getElementById('userInput');
+            const chatMessages = document.getElementById('chatMessages');
+            const userQuestion = userInput.value.trim();
+            
+            if (!userQuestion) return;
+            
+            // Add interviewer question
+            const interviewerDiv = document.createElement('div');
+            interviewerDiv.className = 'message user fade-in';
+            interviewerDiv.innerHTML = `
+                <div class="message-text">${userQuestion}</div>
+            `;
+            
+            chatMessages.appendChild(interviewerDiv);
+            userInput.value = '';
+            
+            // Auto scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Add typing indicator
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'typing-indicator';
+            typingIndicator.innerHTML = `
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            `;
+            chatMessages.appendChild(typingIndicator);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Generate candidate response based on question
+            let candidateResponse = generateCandidateResponse(userQuestion);
+            
+            // Show candidate response after a delay
+            setTimeout(() => {
+                chatMessages.removeChild(typingIndicator);
+                
+                const candidateDiv = document.createElement('div');
+                candidateDiv.className = 'message ai fade-in';
+                
+                candidateDiv.innerHTML = `
+                    <div class="message-sender">
+                        <i class="fas fa-user"></i> AI Candidate
+                    </div>
+                    <div class="message-text">
+                        ${candidateResponse}
+                    </div>
+                `;
+                
+                chatMessages.appendChild(candidateDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 2000);
+        }
+        
+        // Function to handle keyboard enter press
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+        
+        // Function to use a question from the question bank
+        function useQuestion(element) {
+            const questionText = element.querySelector('.question-text').textContent;
+            document.getElementById('userInput').value = questionText;
+            
+            // Remove active class from all questions
+            document.querySelectorAll('.question-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Add active class to the selected question
+            element.classList.add('active');
+        }
+        
+        // Function to set rating stars
+        function setRating(starElement, category) {
+            const rating = parseInt(starElement.getAttribute('data-rating'));
+            const stars = starElement.parentElement.querySelectorAll('.star');
+            
+            stars.forEach(star => {
+                const starRating = parseInt(star.getAttribute('data-rating'));
+                if (starRating <= rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+        
+        // Function to submit the evaluation
+        function submitEvaluation() {
+            alert('Evaluation submitted successfully!');
+        }
+        
+        // Function to generate a response based on the question
+        function generateCandidateResponse(question) {
+            // Check if the question matches any of our pre-defined responses
+            if (question.toLowerCase().includes('rest') && question.toLowerCase().includes('graphql')) {
+                return candidateResponses.rest_graphql;
+            } else if (question.toLowerCase().includes('deadline')) {
+                return candidateResponses.deadline;
+            } else if (question.toLowerCase().includes('optimize') && question.toLowerCase().includes('website')) {
+                return candidateResponses.website_optimization;
+            } else if (question.toLowerCase().includes('debugging') || question.toLowerCase().includes('production issue')) {
+                return candidateResponses.debugging_production;
+            } else if (question.toLowerCase().includes('conflict') || question.toLowerCase().includes('team member')) {
+                return candidateResponses.team_conflict;
+            } else if (question.toLowerCase().includes('docker') || question.toLowerCase().includes('containerization')) {
+                return candidateResponses.docker_experience;
+            } else if (question.toLowerCase().includes('mentor') || question.toLowerCase().includes('junior')) {
+                return candidateResponses.mentor_juniors;
+            } else if (question.toLowerCase().includes('microservices')) {
+                return candidateResponses.microservices;
+            }
+            
+            // Generic responses for other questions
+            const genericResponses = [
+                "That's an interesting question. Based on my experience, I would approach this by first understanding the core requirements, then developing a strategic plan that addresses the key challenges while remaining flexible for adjustments as needed.",
+                "In my previous role, I had a similar situation. I found that combining technical expertise with effective communication was crucial. I collaborated with the team to develop a solution that not only met the immediate needs but also scaled well for future requirements.",
+                "I believe my background in both front-end and back-end development gives me a unique perspective on this. I'd focus on creating a solid architecture first, ensuring it's both maintainable and efficient, while keeping user experience at the forefront of the decision-making process.",
+                "My approach would be methodical and data-driven. I'd start by gathering metrics to establish a baseline, implement changes iteratively, and continuously measure the impact. This ensures we can course-correct quickly if something isn't working as expected."
+            ];
+            
+            return genericResponses[Math.floor(Math.random() * genericResponses.length)];
+        }
+    </script>
+</body>
+</html> 

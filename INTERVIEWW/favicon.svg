@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <style>
+    .bg {
+      fill: #0F0F17;
+    }
+    .n {
+      fill: #FF4D4D;
+      font-family: 'Arial Black', sans-serif;
+      font-weight: 900;
+      font-size: 40px;
+    }
+    .shuriken {
+      fill: #FF4D4D;
+    }
+  </style>
+  <circle class="bg" cx="32" cy="32" r="32" />
+  <text class="n" x="20" y="46">N</text>
+  <path class="shuriken" d="M48,24 L50,30 L56,32 L50,34 L48,40 L46,34 L40,32 L46,30 Z" />
+</svg> 
